@@ -21,7 +21,6 @@ echo ""
 if command -v dpkg &>/dev/null; then
     if dpkg -l | grep -qw "$PACKAGE"; then
         echo "[OK] $PACKAGE is installed (Debian-based system)."
-        # Show version info using the python3 command directly
         PYVERSION=$(python3 --version 2>&1)
         echo "     Version : $PYVERSION"
     else
@@ -37,11 +36,14 @@ elif command -v rpm &>/dev/null; then
         echo "[!!] $PACKAGE is NOT installed on this system."
     fi
 
-# Fallback: check if python3 command exists (Windows/Git Bash/others)
+# Fallback: check if python3 or python command exists (Windows/Git Bash/others)
 else
     if command -v python3 &>/dev/null; then
         echo "[OK] $PACKAGE is available on this system."
         python3 --version
+    elif command -v python &>/dev/null; then
+        echo "[OK] python (as 'python') is available."
+        python --version
     else
         echo "[!!] $PACKAGE is NOT installed or not found in PATH."
     fi
@@ -53,7 +55,6 @@ echo " FOSS Philosophy Notes"
 echo "--------------------------------------------"
 
 # --- Case statement to print philosophy note based on package name ---
-# Each case prints a short insight about the open-source philosophy of that tool
 case $PACKAGE in
     python3|python)
         echo "Python: born from a community, shaped by one guiding principle —"

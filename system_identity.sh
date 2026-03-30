@@ -16,7 +16,18 @@ SOFTWARE_CHOICE="Python"         # The open-source software chosen for audit
 KERNEL=$(uname -r)               # Get Linux kernel version
 USER_NAME=$(whoami)              # Get current logged-in username
 HOME_DIR=$HOME                   # Get home directory of current user
-UPTIME=$(uptime -p)              # Get system uptime in human-readable form
+
+# --- Portable uptime extraction (works on Git Bash and Linux) ---
+if command -v uptime &>/dev/null; then
+    # Try to get uptime without -p (Git Bash doesn't support -p)
+    UPTIME=$(uptime | sed -E 's/^.*up ([^,]*),.*$/\1/' | xargs)
+    if [ -z "$UPTIME" ]; then
+        UPTIME="unknown"
+    fi
+else
+    UPTIME="unknown"
+fi
+
 CURRENT_DATE=$(date)             # Get current date and time
 
 # --- Get Linux distro name (works on most Debian/RPM systems) ---

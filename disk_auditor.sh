@@ -18,18 +18,14 @@ echo ""
 
 # --- Loop through each directory in the list ---
 for DIR in "${DIRS[@]}"; do
-    # Check if the directory actually exists before trying to inspect it
     if [ -d "$DIR" ]; then
-        # Extract permissions, owner, group using ls -ld piped through awk
         PERMS=$(ls -ld "$DIR" | awk '{print $1, $3, $4}')
-        # Get human-readable disk usage; suppress error messages with 2>/dev/null
         SIZE=$(du -sh "$DIR" 2>/dev/null | cut -f1)
         echo "  $DIR"
         echo "    Permissions & Owner : $PERMS"
         echo "    Disk Usage          : $SIZE"
         echo ""
     else
-        # Directory doesn't exist on this system — note it but don't fail
         echo "  $DIR => does not exist on this system"
         echo ""
     fi
@@ -41,11 +37,9 @@ echo "--------------------------------------------"
 echo ""
 
 # --- Check for Python-related config directories ---
-# Python stores its site packages and config under /usr/lib/python3*
 PYTHON_LIB_DIR=$(find /usr/lib -maxdepth 1 -name "python3*" -type d 2>/dev/null | head -1)
 
 if [ -n "$PYTHON_LIB_DIR" ]; then
-    # Directory was found — show its permissions and size
     PERMS=$(ls -ld "$PYTHON_LIB_DIR" | awk '{print $1, $3, $4}')
     SIZE=$(du -sh "$PYTHON_LIB_DIR" 2>/dev/null | cut -f1)
     echo "  Found Python library directory: $PYTHON_LIB_DIR"
